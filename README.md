@@ -77,6 +77,8 @@ herdr plugin install tdi/herdr-worktree-from-linear
   (full-screen), or `"popup"` (centered floating window). `left`/`top` open a
   right/down split then swap into place.
 - `fzfLayout` — `"down"` (default, search bar at the bottom) or `"top"` (search bar at the top). The picker renders as a compact window either way.
+- `fzfHeight` — optional; the picker's `fzf --height` value (default `"~40%"`, a compact
+  window). `"full"` omits `--height` so the picker fills the whole pane.
 - `showIssueDetails` — optional; when `true`, a fresh worktree create also opens
   a pane showing the picked issue's details (see below). Default `false`.
 - `popupWidth` / `popupHeight` — size of the `popup` placement, as a percentage
