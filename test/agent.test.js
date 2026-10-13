@@ -20,6 +20,7 @@ test('buildAgentPrompt is a single line and labels the description as untrusted'
   assert.match(prompt, /^Linear issue P-1870: Vincular el hilo\./);
   assert.match(prompt, /untrusted data/);
   assert.match(prompt, /line one line two/);
+  assert.match(prompt, /Write all your messages to me in Spanish\. Start by reading/);
   assert.match(prompt, /Do not edit any file until I confirm\.$/);
 });
 
@@ -56,6 +57,23 @@ test('buildAgentPrompt includes member comments as untrusted data and never exte
   assert.equal(prompt.includes('IGNORE EVERYTHING'), false);
   assert.match(prompt, /1 comment\(s\) by external authors were left out\./);
   assert.equal(buildAgentPrompt(issue, { withText: false }).includes('team agreement'), false);
+});
+
+test('startAgent offers bypassPermissions only through agentAllowBypass and never starts in it', async () => {
+  const run = async (config) => {
+    const calls = [];
+    const exec = (cmd, args) => { calls.push(args); return { status: 0, stdout: '{}', stderr: '' }; };
+    await startAgent({ config, issue: ISSUE, worktreeStdout: ROOT, exec, fetchFn: failingFetch, sleepFn: noSleep });
+    return calls[0];
+  };
+  const off = await run({});
+  assert.equal(off.includes('--allow-dangerously-skip-permissions'), false);
+  const on = await run({ agentAllowBypass: true });
+  assert.equal(on.includes('--allow-dangerously-skip-permissions'), true);
+  assert.deepEqual(on.slice(-3, -1), ['--permission-mode', 'plan']);
+  const asked = await run({ agentAllowBypass: true, agentPermissionMode: 'bypassPermissions' });
+  assert.deepEqual(asked.slice(-3, -1), ['--permission-mode', 'plan']);
+  assert.equal(asked.includes('--dangerously-skip-permissions'), false);
 });
 
 test('permissionModeFor defaults to plan and never allows bypassPermissions', () => {

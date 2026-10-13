@@ -86,7 +86,12 @@ herdr plugin install tdi/herdr-worktree-from-linear
   are left out (only their count is sent). Default `false`.
 - `agentPermissionMode` — optional; the `claude --permission-mode` the agent starts in:
   `plan` (default: it reads and proposes, nothing is edited or run until you approve),
-  `manual`, `acceptEdits`, `auto` or `dontAsk`. Anything else falls back to `plan`.
+  `manual`, `acceptEdits`, `auto` or `dontAsk`. Anything else, including `bypassPermissions`,
+  falls back to `plan`: the agent never starts with permission checks off.
+- `agentAllowBypass` — optional; when `true`, the agent is started with
+  `--allow-dangerously-skip-permissions`, so `bypassPermissions` appears in its `shift+tab`
+  cycle. It is only an option you can switch to; the starting mode is still
+  `agentPermissionMode`. Default `false`.
 - `showIssueDetails` — optional; when `true`, a fresh worktree create also opens
   a pane showing the picked issue's details (see below). Default `false`.
 - `popupWidth` / `popupHeight` — size of the `popup` placement, as a percentage
