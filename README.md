@@ -62,6 +62,8 @@ herdr plugin install tdi/herdr-worktree-from-linear
   longer need to invoke the action from inside a git repo at all.
 - `assignedToMe` — optional; when `true`, only list issues assigned to you (the
   API key's user). Default `false` (all assignees).
+- `allStates` — optional; when `true`, list issues in every state, including
+  completed and canceled, and ignore `includeBacklog`/`includeTriage`. Default `false`.
 - `includeBacklog` — optional; when `true`, also list issues whose state type is
   `backlog` (Backlog, Idea and any custom state of that type, such as `blocked`).
   Default `false`.
