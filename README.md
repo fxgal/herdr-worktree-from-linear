@@ -64,6 +64,9 @@ herdr plugin install tdi/herdr-worktree-from-linear
   API key's user). Default `false` (all assignees).
 - `allStates` — optional; when `true`, list issues in every state, including
   completed and canceled, and ignore `includeBacklog`/`includeTriage`. Default `false`.
+- `excludeStateTypes` — optional array, used with `allStates`: state types to hide, from
+  `triage`, `backlog`, `unstarted`, `started`, `completed`, `canceled`. `["completed"]` hides
+  every Done-type state. Unknown values are ignored.
 - `includeBacklog` — optional; when `true`, also list issues whose state type is
   `backlog` (Backlog, Idea and any custom state of that type, such as `blocked`).
   Default `false`.
