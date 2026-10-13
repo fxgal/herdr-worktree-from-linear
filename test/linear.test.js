@@ -85,6 +85,15 @@ test('buildIssueBody filters by team key and number and asks for the pane fields
   }
 });
 
+test('threadComments marks comments without a workspace member as external', () => {
+  const roots = threadComments([
+    { id: 'm', createdAt: '2026-07-22T08:00', body: 'a', user: { displayName: 'Ana' } },
+    { id: 'x', createdAt: '2026-07-22T09:00', body: 'b', externalUser: { name: 'Client' } },
+    { id: 'u', createdAt: '2026-07-22T10:00', body: 'c' },
+  ]);
+  assert.deepEqual(roots.map((c) => [c.author, c.external]), [['Ana', false], ['Client', true], ['unknown', true]]);
+});
+
 test('threadComments nests replies under their root, oldest first', () => {
   const roots = threadComments([
     { id: 'r2', createdAt: '2026-07-22T12:00', body: 'second thread', user: { displayName: 'B' } },
@@ -121,7 +130,7 @@ test('fetchIssue posts with auth and maps a single issue', async () => {
   assert.deepEqual(issue, {
     identifier: 'BIT-123', title: 'Do it', description: 'Body', url: 'u', stateName: 'Todo', assignee: 'Sven',
     priority: 'High', estimate: 3, project: 'Upsell', cycle: '226', labels: ['Android'],
-    comments: [{ id: 'c1', parentId: '', createdAt: '2026-07-22T08:00', author: 'Aurelien', body: 'hi', replies: [] }],
+    comments: [{ id: 'c1', parentId: '', createdAt: '2026-07-22T08:00', author: 'Aurelien', external: false, body: 'hi', replies: [] }],
   });
   assert.equal(calls[0].opts.headers.Authorization, 'k');
 });

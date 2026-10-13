@@ -80,9 +80,13 @@ herdr plugin install tdi/herdr-worktree-from-linear
 - `fzfHeight` — optional; the picker's `fzf --height` value (default `"~40%"`, a compact
   window). `"full"` omits `--height` so the picker fills the whole pane.
 - `startAgent` — optional; when `true`, a fresh worktree create also starts `claude` in the
-  root pane with the ticket (ID, title, URL, state, description) as its first message.
-  The description is passed as labelled untrusted data on a single line; comments are
-  never sent. Default `false`.
+  root pane with the ticket (ID, title, URL, state, description and the last 10 comments
+  by workspace members) as its first message. Description and comments are passed as
+  labelled untrusted data on a single line; comments by external users or integrations
+  are left out (only their count is sent). Default `false`.
+- `agentPermissionMode` — optional; the `claude --permission-mode` the agent starts in:
+  `plan` (default: it reads and proposes, nothing is edited or run until you approve),
+  `manual`, `acceptEdits`, `auto` or `dontAsk`. Anything else falls back to `plan`.
 - `showIssueDetails` — optional; when `true`, a fresh worktree create also opens
   a pane showing the picked issue's details (see below). Default `false`.
 - `popupWidth` / `popupHeight` — size of the `popup` placement, as a percentage
