@@ -74,3 +74,20 @@ test('loadConfig throws on malformed JSON', () => {
   assert.throws(() => loadConfig(dir), /invalid config\.json/);
   rmSync(dir, { recursive: true, force: true });
 });
+
+test('loadConfig lets config.local.json override config.json and supply the api key', () => {
+  const dir = withDir('{"issueLimit":10,"teamKey":"BIT"}');
+  writeFileSync(join(dir, 'config.local.json'), '{"linearApiKey":"local-key","issueLimit":20}');
+  const config = loadConfig(dir);
+  assert.equal(config.linearApiKey, 'local-key');
+  assert.equal(config.issueLimit, 20);
+  assert.equal(config.teamKey, 'BIT');
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('loadConfig names config.local.json when it is invalid', () => {
+  const dir = withDir('{"linearApiKey":"k"}');
+  writeFileSync(join(dir, 'config.local.json'), '{oops');
+  assert.throws(() => loadConfig(dir), /invalid config\.local\.json/);
+  rmSync(dir, { recursive: true, force: true });
+});

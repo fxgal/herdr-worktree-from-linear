@@ -45,6 +45,7 @@ herdr plugin install tdi/herdr-worktree-from-linear
 ```
 
 - `linearApiKey` (required, unless supplied via the environment — see below).
+- `config.local.json` — optional file in the same directory, merged over `config.json`. Put `linearApiKey` there so `config.json` can be committed without secrets.
 - `issueLimit` — max issues listed (default 50).
 - `base` — where the new branch starts: `"default"` (repo default branch),
   `"head"` (current checkout), or an explicit branch name (e.g. `"develop"`).
