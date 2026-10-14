@@ -149,3 +149,8 @@ test('fetchIssue throws on a bad identifier or a missing issue', async () => {
   const empty = async () => ({ ok: true, status: 200, text: async () => '{"data":{"issues":{"nodes":[]}}}' });
   await assert.rejects(() => fetchIssue({ linearApiKey: 'k' }, 'BIT-999', empty), /not found/);
 });
+
+test('buildIssuesBody excludes the duplicate state type alongside completed and canceled', () => {
+  const body = buildIssuesBody(50, undefined, false, false, false, true, ['completed', 'canceled', 'duplicate']);
+  assert.match(body.query, /nin: \["completed","canceled","duplicate"\]/);
+});
