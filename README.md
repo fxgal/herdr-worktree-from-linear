@@ -37,6 +37,7 @@ herdr plugin install tdi/herdr-worktree-from-linear
   "assignedToMe": true,
   "includeTriage": true,
   "worktreeLocation": "repo",
+  "startOnCreate": false,
   "placement": "right",
   "fzfLayout": "down",
   "showIssueDetails": true,
@@ -55,6 +56,13 @@ herdr plugin install tdi/herdr-worktree-from-linear
   `--worktree`; `"herdr"` leaves it to herdr (`worktrees.directory`, default
   `~/.herdr/worktrees/<repo>/<branch>`). Add `.claude/worktrees/` to the repo's
   `.gitignore` to keep it out of `git status`.
+- `startOnCreate` — optional; when `true`, a fresh worktree create also moves the
+  issue to its team's `started` state (e.g. "In Progress"). Issues already started,
+  completed or canceled are left alone, re-opening a worktree changes nothing, and a
+  failed update only warns. Default `false`.
+- `startedStateName` — optional; with `startOnCreate`, the name of the `started`
+  state to use when the team has several (e.g. `"In Progress"`). Default: the first
+  by position.
 - `teamKey` — optional; restrict to one team (e.g. `BIT`).
 - `repos` — optional; maps a Linear team key to the repo the worktree is created
   in, so a pick routes by the issue's team rather than by whichever pane invoked

@@ -5,6 +5,7 @@
   "teamKey": "BIT",
   "repos": { "BIT": "/home/you/bit-repo" },
   "worktreeLocation": "repo",
+  "startOnCreate": false,
   "fzfLayout": "down",
   "placement": "right",
   "popupWidth": "80%",
