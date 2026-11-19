@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { agentName, buildAgentPrompt, memberComments, permissionModeFor, startAgent } from '../lib/agent.js';
+import { agentName, buildAgentPrompt, memberComments, modelFor, permissionModeFor, startAgent } from '../lib/agent.js';
 
 const ROOT = '{"result":{"root_pane":{"pane_id":"wN:p1"}}}';
 const ISSUE = { identifier: 'P-1870', title: 'Vincular el hilo', url: 'https://linear.app/x/issue/P-1870', stateName: 'In Progress', description: 'line one\n\nline two\t$(touch /tmp/x) `id`' };
@@ -131,4 +131,28 @@ test('startAgent does nothing without a root pane or a valid name', async () => 
   const boom = () => { throw new Error('should not exec'); };
   assert.equal(await startAgent({ config: {}, issue: ISSUE, worktreeStdout: '{"result":{}}', exec: boom, fetchFn: failingFetch }), false);
   assert.equal(await startAgent({ config: {}, issue: { ...ISSUE, identifier: '?!' }, worktreeStdout: ROOT, exec: boom, fetchFn: failingFetch }), false);
+});
+
+test('modelFor defaults plan sessions to opusplan and honours agentModel', () => {
+  assert.equal(modelFor({}), 'opusplan');
+  assert.equal(modelFor(undefined), 'opusplan');
+  assert.equal(modelFor({ agentPermissionMode: 'auto' }), null);
+  assert.equal(modelFor({ agentModel: 'sonnet' }), 'sonnet');
+  assert.equal(modelFor({ agentPermissionMode: 'auto', agentModel: 'opus' }), 'opus');
+  assert.equal(modelFor({ agentModel: 'opus; rm -rf ~' }), 'opusplan');
+  assert.equal(modelFor({ agentModel: '' }), 'opusplan');
+});
+
+test('startAgent passes --model only when a model applies', async () => {
+  const run = async (config) => {
+    const calls = [];
+    const exec = (cmd, args) => { calls.push(args); return { status: 0, stdout: '{}', stderr: '' }; };
+    await startAgent({ config, issue: ISSUE, worktreeStdout: ROOT, exec, fetchFn: failingFetch, sleepFn: noSleep });
+    const args = calls[0];
+    const sep = args.indexOf('--');
+    return args.slice(sep + 1, -1);
+  };
+  assert.deepEqual(await run({}), ['--model', 'opusplan', '--permission-mode', 'plan']);
+  assert.deepEqual(await run({ agentPermissionMode: 'auto' }), ['--permission-mode', 'auto']);
+  assert.deepEqual(await run({ agentModel: 'opus', agentAllowBypass: true }), ['--model', 'opus', '--allow-dangerously-skip-permissions', '--permission-mode', 'plan']);
 });

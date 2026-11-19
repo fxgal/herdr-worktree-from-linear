@@ -103,6 +103,10 @@ herdr plugin install tdi/herdr-worktree-from-linear
   `plan` (default: it reads and proposes, nothing is edited or run until you approve),
   `manual`, `acceptEdits`, `auto` or `dontAsk`. Anything else, including `bypassPermissions`,
   falls back to `plan`: the agent never starts with permission checks off.
+- `agentModel` — optional; the `claude --model` the agent starts with (an alias such as
+  `opusplan`, `opus`, `sonnet`, or a full model id). When unset, a `plan` session starts with
+  `opusplan` (Opus while planning, Sonnet once the plan is approved) and the other modes use
+  Claude's default model. A value with spaces or shell characters is ignored.
 - `agentAllowBypass` — optional; when `true`, the agent is started with
   `--allow-dangerously-skip-permissions`, so `bypassPermissions` appears in its `shift+tab`
   cycle. It is only an option you can switch to; the starting mode is still
